@@ -1,851 +1,1462 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartCare AI — System Flow</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --navy:   #0B2545;
-    --teal:   #1A7F8E;
-    --mint:   #16A34A;
-    --gold:   #D97706;
-    --purple: #7C3AED;
-    --red:    #DC2626;
-    --slate:  #334155;
-    --muted:  #64748B;
-    --border: #E2E8F0;
-    --bg:     #F1F5F9;
-    --white:  #FFFFFF;
-    --ink:    #1E293B;
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartCare AI — System Flow</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --navy: #0b2545;
+        --teal: #1a7f8e;
+        --mint: #16a34a;
+        --gold: #d97706;
+        --purple: #7c3aed;
+        --red: #dc2626;
+        --slate: #334155;
+        --muted: #64748b;
+        --border: #e2e8f0;
+        --bg: #f1f5f9;
+        --white: #ffffff;
+        --ink: #1e293b;
+      }
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    font-size: 14px;
-    line-height: 1.6;
-  }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        font-size: 14px;
+        line-height: 1.6;
+      }
 
-  @media print {
-    .no-print { display:none !important; }
-    body { background: white; }
-    .role-section { page-break-inside: avoid; }
-    .cover { page-break-after: always; }
-  }
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+        body {
+          background: white;
+        }
+        .role-section {
+          page-break-inside: avoid;
+        }
+        .cover {
+          page-break-after: always;
+        }
+      }
 
-  /* ── COVER ── */
-  .cover {
-    background: linear-gradient(140deg, #0B2545 0%, #0F3460 60%, #0B2545 100%);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    padding: 60px 40px;
-    text-align: center;
-  }
-  .cover::before {
-    content:'';
-    position:absolute; top:-100px; right:-100px;
-    width:420px; height:420px;
-    background: radial-gradient(circle, rgba(26,127,142,0.2) 0%, transparent 70%);
-    border-radius:50%;
-  }
-  .cover::after {
-    content:'';
-    position:absolute; bottom:-60px; left:-60px;
-    width:320px; height:320px;
-    background: radial-gradient(circle, rgba(22,163,74,0.1) 0%, transparent 70%);
-    border-radius:50%;
-  }
-  .cover-chip {
-    display:inline-block;
-    background: rgba(26,127,142,0.3);
-    border: 1px solid rgba(26,127,142,0.5);
-    color: #7FDEEA;
-    font-size:11px; font-weight:700;
-    letter-spacing:3px; text-transform:uppercase;
-    padding:7px 20px; border-radius:100px;
-    margin-bottom:32px;
-  }
-  .cover-cross {
-    width:80px; height:80px;
-    background: rgba(255,255,255,0.07);
-    border: 1.5px solid rgba(255,255,255,0.15);
-    border-radius:20px;
-    display:flex; align-items:center; justify-content:center;
-    margin: 0 auto 28px;
-    position:relative; z-index:1;
-  }
-  .cross-v { position:absolute; width:10px; height:44px; background:#22C55E; border-radius:4px; }
-  .cross-h { position:absolute; width:44px; height:10px; background:#22C55E; border-radius:4px; }
-  .cover h1 {
-    font-family:'DM Serif Display',serif;
-    font-size: clamp(40px,7vw,68px);
-    color:white; line-height:1.1;
-    margin-bottom:10px; position:relative; z-index:1;
-  }
-  .cover h1 span { color:#7FDEEA; }
-  .cover-sub {
-    font-size:15px; color:rgba(200,220,240,0.75);
-    max-width:440px; margin: 0 auto 44px;
-    position:relative; z-index:1;
-  }
-  .cover-roles {
-    display:flex; gap:12px;
-    position:relative; z-index:1;
-    flex-wrap:wrap; justify-content:center;
-  }
-  .cover-role {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius:12px;
-    padding:16px 24px;
-    color:white;
-    min-width:140px;
-  }
-  .cover-role .r-icon { font-size:26px; margin-bottom:6px; }
-  .cover-role .r-name { font-weight:700; font-size:14px; }
-  .cover-role .r-sub  { font-size:11px; opacity:0.55; margin-top:2px; }
-  .cover-bar {
-    position:absolute; bottom:0; left:0; right:0; height:4px;
-    background: linear-gradient(90deg, #22C55E, #1A7F8E, #7C3AED);
-  }
+      /* ── COVER ── */
+      .cover {
+        background: linear-gradient(140deg, #0b2545 0%, #0f3460 60%, #0b2545 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 60px 40px;
+        text-align: center;
+      }
+      .cover::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(circle, rgba(26, 127, 142, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+      }
+      .cover::after {
+        content: "";
+        position: absolute;
+        bottom: -60px;
+        left: -60px;
+        width: 320px;
+        height: 320px;
+        background: radial-gradient(circle, rgba(22, 163, 74, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+      }
+      .cover-chip {
+        display: inline-block;
+        background: rgba(26, 127, 142, 0.3);
+        border: 1px solid rgba(26, 127, 142, 0.5);
+        color: #7fdeea;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        padding: 7px 20px;
+        border-radius: 100px;
+        margin-bottom: 32px;
+      }
+      .cover-cross {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1.5px solid rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 28px;
+        position: relative;
+        z-index: 1;
+      }
+      .cross-v {
+        position: absolute;
+        width: 10px;
+        height: 44px;
+        background: #22c55e;
+        border-radius: 4px;
+      }
+      .cross-h {
+        position: absolute;
+        width: 44px;
+        height: 10px;
+        background: #22c55e;
+        border-radius: 4px;
+      }
+      .cover h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: clamp(40px, 7vw, 68px);
+        color: white;
+        line-height: 1.1;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+      }
+      .cover h1 span {
+        color: #7fdeea;
+      }
+      .cover-sub {
+        font-size: 15px;
+        color: rgba(200, 220, 240, 0.75);
+        max-width: 440px;
+        margin: 0 auto 44px;
+        position: relative;
+        z-index: 1;
+      }
+      .cover-roles {
+        display: flex;
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .cover-role {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        padding: 16px 24px;
+        color: white;
+        min-width: 140px;
+      }
+      .cover-role .r-icon {
+        font-size: 26px;
+        margin-bottom: 6px;
+      }
+      .cover-role .r-name {
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .cover-role .r-sub {
+        font-size: 11px;
+        opacity: 0.55;
+        margin-top: 2px;
+      }
+      .cover-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #22c55e, #1a7f8e, #7c3aed);
+      }
 
-  /* ── WRAPPER ── */
-  .wrapper { max-width:960px; margin:0 auto; padding:56px 28px; }
+      /* ── WRAPPER ── */
+      .wrapper {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 56px 28px;
+      }
 
-  /* ── LOGIN BLOCK ── */
-  .login-block {
-    background: var(--white);
-    border-radius:20px;
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 20px rgba(0,0,0,0.04);
-    padding:40px;
-    margin-bottom:48px;
-    text-align:center;
-  }
-  .login-block h2 {
-    font-family:'DM Serif Display',serif;
-    font-size:24px; color:var(--navy);
-    margin-bottom:8px;
-  }
-  .login-block p { color:var(--muted); font-size:13px; margin-bottom:28px; }
+      /* ── LOGIN BLOCK ── */
+      .login-block {
+        background: var(--white);
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+        padding: 40px;
+        margin: 36px 0;
+        text-align: center;
+      }
+      .login-block h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 24px;
+        color: var(--navy);
+        margin-bottom: 8px;
+      }
+      .login-block p {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 28px;
+      }
 
-  .login-steps {
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:0;
-    flex-wrap:wrap;
-  }
-  .login-step {
-    display:flex; flex-direction:column; align-items:center;
-    gap:8px;
-  }
-  .ls-circle {
-    width:52px; height:52px;
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size:22px;
-    border: 2px solid var(--border);
-    background: white;
-  }
-  .ls-label { font-size:12px; font-weight:600; color:var(--slate); }
+      .login-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        flex-wrap: wrap;
+      }
+      .login-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .ls-circle {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        border: 2px solid var(--border);
+        background: white;
+      }
+      .ls-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--slate);
+      }
 
-  .login-arrow {
-    font-size:20px; color:var(--border);
-    padding: 0 12px;
-    margin-bottom:22px;
-  }
+      .login-arrow {
+        font-size: 20px;
+        color: var(--border);
+        padding: 0 12px;
+        margin-bottom: 22px;
+      }
 
-  .role-chips {
-    display:flex; gap:10px; justify-content:center;
-    flex-wrap:wrap; margin-top:20px;
-  }
-  .role-chip {
-    display:flex; align-items:center; gap:8px;
-    padding:10px 20px;
-    border-radius:100px;
-    font-weight:700; font-size:13px;
-    border: 2px solid;
-  }
-  .rc-patient { background:#DCFCE7; color:#166534; border-color:#86EFAC; }
-  .rc-doctor  { background:#CFFAFE; color:#164E63; border-color:#67E8F9; }
-  .rc-admin   { background:#FEF3C7; color:#92400E; border-color:#FCD34D; }
+      .role-chips {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      .role-chip {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 100px;
+        font-weight: 700;
+        font-size: 13px;
+        border: 2px solid;
+      }
+      .rc-patient {
+        background: #dcfce7;
+        color: #166534;
+        border-color: #86efac;
+      }
+      .rc-doctor {
+        background: #cffafe;
+        color: #164e63;
+        border-color: #67e8f9;
+      }
+      .rc-admin {
+        background: #fef3c7;
+        color: #92400e;
+        border-color: #fcd34d;
+      }
 
-  /* ── ROLE SECTION ── */
-  .role-section { margin-bottom:52px; }
+      /* ── ROLE SECTION ── */
+      .role-section {
+        margin-bottom: 52px;
+      }
 
-  .role-header {
-    display:flex; align-items:center; gap:18px;
-    padding:24px 32px;
-    border-radius:16px 16px 0 0;
-    color:white;
-  }
-  .rh-icon {
-    width:52px; height:52px;
-    background:rgba(255,255,255,0.15);
-    border-radius:14px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:26px; flex-shrink:0;
-  }
-  .rh-num { font-size:11px; font-weight:700; letter-spacing:2px; opacity:0.65; margin-bottom:2px; }
-  .rh-title { font-family:'DM Serif Display',serif; font-size:24px; line-height:1.2; }
-  .rh-sub { font-size:12px; opacity:0.7; margin-top:2px; }
+      .role-header {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 24px 32px;
+        border-radius: 16px 16px 0 0;
+        color: white;
+      }
+      .rh-icon {
+        width: 52px;
+        height: 52px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        flex-shrink: 0;
+      }
+      .rh-num {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        opacity: 0.65;
+        margin-bottom: 2px;
+      }
+      .rh-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 24px;
+        line-height: 1.2;
+      }
+      .rh-sub {
+        font-size: 12px;
+        opacity: 0.7;
+        margin-top: 2px;
+      }
 
-  .role-body {
-    background:white;
-    border-radius:0 0 16px 16px;
-    border:1px solid var(--border); border-top:none;
-    padding:36px;
-  }
+      .role-body {
+        background: white;
+        border-radius: 0 0 16px 16px;
+        border: 1px solid var(--border);
+        border-top: none;
+        padding: 36px;
+      }
 
-  /* ── MODULE ── */
-  .module { margin-bottom:32px; }
-  .module:last-child { margin-bottom:0; }
+      /* ── MODULE ── */
+      .module {
+        margin-bottom: 32px;
+      }
+      .module:last-child {
+        margin-bottom: 0;
+      }
 
-  .mod-title {
-    font-family:'DM Serif Display',serif;
-    font-size:17px; color:var(--navy);
-    margin-bottom:14px;
-    display:flex; align-items:center; gap:10px;
-  }
-  .mod-title::after {
-    content:''; flex:1; height:1px; background:var(--border);
-  }
+      .mod-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 17px;
+        color: var(--navy);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .mod-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
 
-  /* ── FLOW STEPS ── */
-  .flow-steps { display:flex; flex-direction:column; }
+      /* ── FLOW STEPS ── */
+      .flow-steps {
+        display: flex;
+        flex-direction: column;
+      }
 
-  .flow-step { display:flex; gap:0; }
+      .flow-step {
+        display: flex;
+        gap: 0;
+      }
 
-  .fs-left {
-    display:flex; flex-direction:column; align-items:center;
-    width:40px; flex-shrink:0;
-  }
-  .fs-dot {
-    width:32px; height:32px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-weight:700; font-size:13px; color:white;
-    flex-shrink:0; z-index:1;
-  }
-  .fs-line {
-    width:2px; flex:1; min-height:12px;
-    background:var(--border);
-  }
-  .flow-step:last-child .fs-line { display:none; }
+      .fs-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 40px;
+        flex-shrink: 0;
+      }
+      .fs-dot {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 13px;
+        color: white;
+        flex-shrink: 0;
+        z-index: 1;
+      }
+      .fs-line {
+        width: 2px;
+        flex: 1;
+        min-height: 12px;
+        background: var(--border);
+      }
+      .flow-step:last-child .fs-line {
+        display: none;
+      }
 
-  .fs-right {
-    padding:3px 0 20px 14px; flex:1;
-  }
-  .fs-title { font-weight:600; font-size:14px; color:var(--navy); margin-bottom:3px; }
-  .fs-desc  { font-size:12.5px; color:var(--muted); line-height:1.55; }
+      .fs-right {
+        padding: 3px 0 20px 14px;
+        flex: 1;
+      }
+      .fs-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--navy);
+        margin-bottom: 3px;
+      }
+      .fs-desc {
+        font-size: 12.5px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
 
-  /* ── FEATURE LIST (icon + text) ── */
-  .feat-list {
-    display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
-    gap:10px;
-  }
-  .feat-item {
-    display:flex; align-items:flex-start; gap:10px;
-    padding:12px 14px;
-    border:1px solid var(--border);
-    border-radius:10px;
-    background:#FAFCFD;
-  }
-  .feat-icon { font-size:18px; flex-shrink:0; }
-  .feat-text { font-size:12.5px; color:var(--slate); line-height:1.5; }
-  .feat-text b { color:var(--navy); display:block; margin-bottom:2px; }
+      /* ── FEATURE LIST (icon + text) ── */
+      .feat-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 10px;
+      }
+      .feat-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fafcfd;
+      }
+      .feat-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+      .feat-text {
+        font-size: 12.5px;
+        color: var(--slate);
+        line-height: 1.5;
+      }
+      .feat-text b {
+        color: var(--navy);
+        display: block;
+        margin-bottom: 2px;
+      }
 
-  /* ── DIVIDER ── */
-  .divider { height:1px; background:var(--border); margin:26px 0; }
+      /* ── DIVIDER ── */
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 26px 0;
+      }
 
-  /* ── BADGE ── */
-  .badge {
-    display:inline-block;
-    font-size:10px; font-weight:700;
-    padding:2px 8px; border-radius:100px;
-    margin-left:6px; vertical-align:middle;
-  }
-  .b-ai     { background:#EDE9FE; color:#5B21B6; }
-  .b-auto   { background:#DCFCE7; color:#166534; }
-  .b-alert  { background:#FEE2E2; color:#991B1B; }
+      /* ── BADGE ── */
+      .badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 100px;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+      .b-ai {
+        background: #ede9fe;
+        color: #5b21b6;
+      }
+      .b-auto {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .b-alert {
+        background: #fee2e2;
+        color: #991b1b;
+      }
 
-  /* ── PRINT BTN ── */
-  .print-btn {
-    position:fixed; bottom:28px; right:28px;
-    background:var(--navy); color:white;
-    border:none; border-radius:100px;
-    padding:13px 22px;
-    font-family:'DM Sans',sans-serif;
-    font-size:13px; font-weight:700;
-    cursor:pointer;
-    box-shadow:0 8px 28px rgba(11,37,69,0.3);
-    display:flex; align-items:center; gap:7px;
-    z-index:999;
-    transition:transform 0.2s;
-  }
-  .print-btn:hover { transform:translateY(-2px); }
+      /* ── PRINT BTN ── */
+      .print-btn {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        background: var(--navy);
+        color: white;
+        border: none;
+        border-radius: 100px;
+        padding: 13px 22px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 28px rgba(11, 37, 69, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        z-index: 999;
+        transition: transform 0.2s;
+      }
+      .print-btn:hover {
+        transform: translateY(-2px);
+      }
 
-  /* ── FOOTER ── */
-  .footer {
-    text-align:center;
-    padding:40px 0 20px;
-    border-top:1px solid var(--border);
-    color:var(--muted); font-size:12px;
-  }
-  .footer-logo {
-    font-family:'DM Serif Display',serif;
-    font-size:18px; color:var(--navy);
-    margin-bottom:6px;
-  }
-</style>
-</head>
-<body>
-
-<!-- ═══ COVER ═══════════════════════════════════════════════════════ -->
-<div class="cover">
-  <div class="cover-chip">User Flow Document</div>
-  <div class="cover-cross"><div class="cross-v"></div><div class="cross-h"></div></div>
-  <h1>SmartCare <span>AI</span></h1>
-  <p class="cover-sub">Complete user flow for all three roles — Patient · Doctor · Admin</p>
-  <div class="cover-roles">
-    <div class="cover-role">
-      <div class="r-icon">👤</div>
-      <div class="r-name">Patient</div>
-      <div class="r-sub">Book · Track · Communicate</div>
-    </div>
-    <div class="cover-role">
-      <div class="r-icon">👨‍⚕️</div>
-      <div class="r-name">Doctor</div>
-      <div class="r-sub">Cases · Prescriptions · Follow-ups</div>
-    </div>
-    <div class="cover-role">
-      <div class="r-icon">👑</div>
-      <div class="r-name">Admin</div>
-      <div class="r-sub">Manage · Monitor · Control</div>
-    </div>
-  </div>
-  <div class="cover-bar"></div>
-</div>
-
-<!-- ═══ CONTENT ══════════════════════════════════════════════════════ -->
-<div class="wrapper">
-
-  <!-- ── LOGIN GATE ── -->
-  <div class="login-block">
-    <h2>Entry Point — Login & Role Selection</h2>
-    <p>Every user starts here — one login screen, then they pick who they are.</p>
-
-    <div class="login-steps">
-      <div class="login-step">
-        <div class="ls-circle">🌐</div>
-        <div class="ls-label">Open App</div>
+      /* ── FOOTER ── */
+      .footer {
+        text-align: center;
+        padding: 40px 0 20px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .footer-logo {
+        font-family: "DM Serif Display", serif;
+        font-size: 18px;
+        color: var(--navy);
+        margin-bottom: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══ COVER ═══════════════════════════════════════════════════════ -->
+    <div class="cover">
+      <div class="cover-chip">User Flow Document</div>
+      <div class="cover-cross">
+        <div class="cross-v"></div>
+        <div class="cross-h"></div>
       </div>
-      <div class="login-arrow">→</div>
-      <div class="login-step">
-        <div class="ls-circle">🔑</div>
-        <div class="ls-label">Login</div>
+      <h1>SmartCare <span>AI</span></h1>
+      <p class="cover-sub">Complete user flow for all three roles — Patient · Doctor · Admin</p>
+      <div class="cover-roles">
+        <div class="cover-role">
+          <div class="r-icon">👤</div>
+          <div class="r-name">Patient</div>
+          <div class="r-sub">Book · Track · Communicate</div>
+        </div>
+        <div class="cover-role">
+          <div class="r-icon">👨‍⚕️</div>
+          <div class="r-name">Doctor</div>
+          <div class="r-sub">Cases · Prescriptions · Follow-ups</div>
+        </div>
+        <div class="cover-role">
+          <div class="r-icon">👑</div>
+          <div class="r-name">Admin</div>
+          <div class="r-sub">Manage · Monitor · Control</div>
+        </div>
       </div>
-      <div class="login-arrow">→</div>
-      <div class="login-step">
-        <div class="ls-circle">👤</div>
-        <div class="ls-label">Choose Role</div>
-      </div>
-      <div class="login-arrow">→</div>
-      <div class="login-step">
-        <div class="ls-circle">🏠</div>
-        <div class="ls-label">Dashboard</div>
-      </div>
+      <div class="cover-bar"></div>
     </div>
 
-    <div class="role-chips">
-      <div class="role-chip rc-patient">👤 Patient</div>
-      <div class="role-chip rc-doctor">👨‍⚕️ Doctor</div>
-      <div class="role-chip rc-admin">👑 Admin</div>
-    </div>
-  </div>
+    <!-- ═══ CONTENT ══════════════════════════════════════════════════════ -->
+    <div class="wrapper">
+      <!-- ── LOGIN GATE ── -->
+      <div class="login-block">
+        <h2>Entry Point — Signup & Access</h2>
+        <p>
+          Every user starts here — one signup flow. Access and role are assigned by the system after
+          verification and approval.
+        </p>
 
+        <div class="login-steps">
+          <div class="login-step">
+            <div class="ls-circle">🌐</div>
+            <div class="ls-label">Open App</div>
+          </div>
+          <div class="login-arrow">→</div>
+          <div class="login-step">
+            <div class="ls-circle">📝</div>
+            <div class="ls-label">Signup</div>
+          </div>
+          <div class="login-arrow">→</div>
+          <div class="login-step">
+            <div class="ls-circle">🔐</div>
+            <div class="ls-label">Verification & Approval</div>
+          </div>
+          <div class="login-arrow">→</div>
+          <div class="login-step">
+            <div class="ls-circle">🏠</div>
+            <div class="ls-label">Dashboard</div>
+          </div>
+        </div>
 
-  <!-- ══════════════════════════════════════════════════════════════
+        <h2 style="text-align: center; margin: 20px 0">Available roles and who verifies them</h2>
+        <div class="role-chips">
+          <div class="role-chip rc-patient">👤 Patient (Self Signup)</div>
+          <div class="role-chip rc-doctor">👨‍⚕️ Doctor (Admin Approval)</div>
+          <div class="role-chip rc-admin">👑 Admin (Super Admin Approval)</div>
+        </div>
+      </div>
+
+      <h1 style="text-align: center">If the user already has an account</h1>
+
+      <div class="login-block">
+        <h2>Login</h2>
+
+        <div class="login-steps">
+          <div class="login-step">
+            <div class="ls-circle">🌐</div>
+            <div class="ls-label">Open App</div>
+          </div>
+          <div class="login-arrow">→</div>
+          <div class="login-step">
+            <div class="ls-circle">🔑</div>
+            <div class="ls-label">Login</div>
+          </div>
+          <div class="login-arrow">→</div>
+          <div class="login-step">
+            <div class="ls-circle">🧠</div>
+            <div class="ls-label">Role Auto-Detected</div>
+          </div>
+          <div class="login-arrow">→</div>
+          <div class="login-step">
+            <div class="ls-circle">🏠</div>
+            <div class="ls-label">Dashboard</div>
+          </div>
+        </div>
+
+        <div class="role-chips">
+          <div class="role-chip rc-patient">👤 Patient Access</div>
+          <div class="role-chip rc-doctor">👨‍⚕️ Doctor Access</div>
+          <div class="role-chip rc-admin">👑 Admin Access</div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════
        PATIENT
   ═════════════════════════════════════════════════════════════════ -->
-  <div class="role-section">
-    <div class="role-header" style="background:linear-gradient(135deg,#16A34A,#15803D)">
-      <div class="rh-icon">👤</div>
-      <div>
-        <div class="rh-num">ROLE 01</div>
-        <div class="rh-title">Patient Flow</div>
-        <div class="rh-sub">From login to follow-up — the complete patient journey</div>
-      </div>
-    </div>
-    <div class="role-body">
+      <div class="role-section">
+        <div class="role-header" style="background: linear-gradient(135deg, #16a34a, #15803d)">
+          <div class="rh-icon">👤</div>
+          <div>
+            <div class="rh-num">ROLE 01</div>
+            <div class="rh-title">Patient Flow</div>
+            <div class="rh-sub">From login to follow-up — the complete patient journey</div>
+          </div>
+        </div>
+        <div class="role-body">
+          <!-- Dashboard -->
+          <div class="module">
+            <div class="mod-title">🏠 Patient Dashboard</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">👋</div>
+                <div class="feat-text">
+                  <b>Welcome Screen</b>Name, next appointment, health summary
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🔔</div>
+                <div class="feat-text">
+                  <b>Smart Alerts</b>Lab results ready · medication due · follow-up reminder
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">📅</div>
+                <div class="feat-text">
+                  <b>Upcoming Appointment</b>Doctor name · date · specialty · countdown
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">⚡</div>
+                <div class="feat-text">
+                  <b>Quick Actions</b>Book · Records · AI Chat · Emergency
+                </div>
+              </div>
+            </div>
+          </div>
 
-      <!-- Dashboard -->
-      <div class="module">
-        <div class="mod-title">🏠 Patient Dashboard</div>
-        <div class="feat-list">
-          <div class="feat-item"><div class="feat-icon">👋</div><div class="feat-text"><b>Welcome Screen</b>Name, next appointment, health summary</div></div>
-          <div class="feat-item"><div class="feat-icon">🔔</div><div class="feat-text"><b>Smart Alerts</b>Lab results ready · medication due · follow-up reminder</div></div>
-          <div class="feat-item"><div class="feat-icon">📅</div><div class="feat-text"><b>Upcoming Appointment</b>Doctor name · date · specialty · countdown</div></div>
-          <div class="feat-item"><div class="feat-icon">⚡</div><div class="feat-text"><b>Quick Actions</b>Book · Records · AI Chat · Emergency</div></div>
+          <div class="divider"></div>
+
+          <!-- Book Appointment -->
+          <div class="module">
+            <div class="mod-title">📅 Booking an Appointment</div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #16a34a">1</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Describe Symptoms <span class="badge b-ai">AI</span></div>
+                  <div class="fs-desc">
+                    Patient types what they feel — AI suggests possible specialties (not a
+                    diagnosis).
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #16a34a">2</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Choose a Doctor</div>
+                  <div class="fs-desc">
+                    List of available doctors in that specialty — with ratings, wait time, and past
+                    visits flagged.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #16a34a">3</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Pick a Date & Time</div>
+                  <div class="fs-desc">
+                    Calendar view showing available slots in real-time. Busy times are grayed out.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left"><div class="fs-dot" style="background: #16a34a">5</div></div>
+                <div class="fs-right">
+                  <div class="fs-title">
+                    Confirmed <span class="badge b-auto">Auto Notify</span>
+                  </div>
+                  <div class="fs-desc">
+                    Instant notification sent. Reminder 24 hours before the appointment.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Medical File -->
+          <div class="module">
+            <div class="mod-title">📁 Medical File & History</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">🔍</div>
+                <div class="feat-text">
+                  <b>Past Diagnoses</b>All previous conditions on a scrollable timeline
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">💊</div>
+                <div class="feat-text">
+                  <b>Prescriptions</b>Current and past medications with dosage
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🧪</div>
+                <div class="feat-text">
+                  <b>Lab Results</b>All tests with trend graphs (glucose, BP…)
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">📡</div>
+                <div class="feat-text"><b>Imaging</b>X-rays and scans viewable inline</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Chat with Doctor -->
+          <div class="module">
+            <div class="mod-title">💬 Chat with Doctor</div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #0891b2">1</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Open Chat (Active Case Only)</div>
+                  <div class="fs-desc">
+                    Chat available only if there is an active appointment or within a limited
+                    follow-up period.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #0891b2">2</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Send Message, Photo, or File</div>
+                  <div class="fs-desc">
+                    Can attach an image of a report, skin condition, or any related document.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left"><div class="fs-dot" style="background: #0891b2">3</div></div>
+                <div class="fs-right">
+                  <div class="fs-title">
+                    Doctor Replies <span class="badge b-auto">Notification</span>
+                  </div>
+                  <div class="fs-desc">
+                    Patient notified when doctor responds. Full conversation history saved.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="feat-list" style="margin-top: 15px">
+            <div class="feat-item" style="width: 100%; grid-column: 1/-1">
+              <div class="feat-icon">⛔</div>
+              <div class="feat-text">
+                <b>Chat Restriction</b>Disabled if no active or recent consultation exists
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- AI Health Assistant -->
+          <div class="module">
+            <div class="mod-title">
+              🤖 AI Health Assistant <span class="badge b-ai" style="font-size: 11px">AI</span>
+            </div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #7c3aed">1</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Patient types how they feel</div>
+                  <div class="fs-desc">"I have had a headache for 3 days with fever."</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #7c3aed">2</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">AI asks follow-up questions</div>
+                  <div class="fs-desc">
+                    To understand severity — pain level, location, duration, other symptoms.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left"><div class="fs-dot" style="background: #7c3aed">3</div></div>
+                <div class="fs-right">
+                  <div class="fs-title">AI suggests next steps (Doctor required)</div>
+                  <div class="fs-desc">
+                    Suggests possible specialties and urgency level — not a diagnosis or
+                    prescription.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="divider"></div>
-
-      <!-- Book Appointment -->
-      <div class="module">
-        <div class="mod-title">📅 Booking an Appointment</div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#16A34A">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Describe Symptoms <span class="badge b-ai">AI</span></div>
-              <div class="fs-desc">Patient types what they feel — AI suggests the right medical specialty automatically.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#16A34A">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Choose a Doctor</div>
-              <div class="fs-desc">List of available doctors in that specialty — with ratings, wait time, and past visits flagged.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#16A34A">3</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Pick a Date & Time</div>
-              <div class="fs-desc">Calendar view showing available slots in real-time. Busy times are grayed out.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#16A34A">4</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Pay Online</div>
-              <div class="fs-desc">Card · wallet · insurance — transparent fee shown before confirming.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#16A34A">5</div></div>
-            <div class="fs-right">
-              <div class="fs-title">Confirmed <span class="badge b-auto">Auto Notify</span></div>
-              <div class="fs-desc">Instant notification sent. Reminder 24 hours before the appointment.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Medical File -->
-      <div class="module">
-        <div class="mod-title">📁 Medical File & History</div>
-        <div class="feat-list">
-          <div class="feat-item"><div class="feat-icon">🔍</div><div class="feat-text"><b>Past Diagnoses</b>All previous conditions on a scrollable timeline</div></div>
-          <div class="feat-item"><div class="feat-icon">💊</div><div class="feat-text"><b>Prescriptions</b>Current and past medications with dosage</div></div>
-          <div class="feat-item"><div class="feat-icon">🧪</div><div class="feat-text"><b>Lab Results</b>All tests with trend graphs (glucose, BP…)</div></div>
-          <div class="feat-item"><div class="feat-icon">📡</div><div class="feat-text"><b>Imaging</b>X-rays and scans viewable inline</div></div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Chat with Doctor -->
-      <div class="module">
-        <div class="mod-title">💬 Chat with Doctor</div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#0891B2">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Open Chat with Assigned Doctor</div>
-              <div class="fs-desc">Patient finds their doctor's card and opens the chat window.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#0891B2">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Send Message, Photo, or File</div>
-              <div class="fs-desc">Can attach an image of a report, skin condition, or any related document.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#0891B2">3</div></div>
-            <div class="fs-right">
-              <div class="fs-title">Doctor Replies <span class="badge b-auto">Notification</span></div>
-              <div class="fs-desc">Patient notified when doctor responds. Full conversation history saved.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- AI Health Assistant -->
-      <div class="module">
-        <div class="mod-title">🤖 AI Health Assistant <span class="badge b-ai" style="font-size:11px">AI</span></div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#7C3AED">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Patient types how they feel</div>
-              <div class="fs-desc">"I have had a headache for 3 days with fever."</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#7C3AED">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">AI asks follow-up questions</div>
-              <div class="fs-desc">To understand severity — pain level, location, duration, other symptoms.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#7C3AED">3</div></div>
-            <div class="fs-right">
-              <div class="fs-title">AI gives a recommendation</div>
-              <div class="fs-desc">Suggests a specialty, urgency level, and nearest available appointment slot.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Emergency -->
-      <div class="module">
-        <div class="mod-title">🚨 Emergency</div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#DC2626">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Tap the Emergency Button</div>
-              <div class="fs-desc">A red high-visibility button always visible on the home screen.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#DC2626">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Select Main Symptom</div>
-              <div class="fs-desc">Large tap chips: Chest pain · Can't breathe · Unconscious · Severe bleeding.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#DC2626">3</div></div>
-            <div class="fs-right">
-              <div class="fs-title">Alert Sent Immediately <span class="badge b-alert">URGENT</span></div>
-              <div class="fs-desc">Location + symptoms + full medical history sent to the emergency team at once.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- ══════════════════════════════════════════════════════════════
+      <!-- ══════════════════════════════════════════════════════════════
        DOCTOR
   ═════════════════════════════════════════════════════════════════ -->
-  <div class="role-section">
-    <div class="role-header" style="background:linear-gradient(135deg,#1A7F8E,#0F5F6B)">
-      <div class="rh-icon">👨‍⚕️</div>
-      <div>
-        <div class="rh-num">ROLE 02</div>
-        <div class="rh-title">Doctor Flow</div>
-        <div class="rh-sub">Cases, examinations, prescriptions, and follow-ups</div>
-      </div>
-    </div>
-    <div class="role-body">
+      <div class="role-section">
+        <div class="role-header" style="background: linear-gradient(135deg, #1a7f8e, #0f5f6b)">
+          <div class="rh-icon">👨‍⚕️</div>
+          <div>
+            <div class="rh-num">ROLE 02</div>
+            <div class="rh-title">Doctor Flow</div>
+            <div class="rh-sub">Cases, examinations, prescriptions, and follow-ups</div>
+          </div>
+        </div>
+        <div class="role-body">
+          <!-- Doctor Dashboard -->
+          <div class="module">
+            <div class="mod-title">🏠 Doctor Dashboard</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">📋</div>
+                <div class="feat-text">
+                  <b>Today's Queue</b>Full patient list with appointment times
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🚨</div>
+                <div class="feat-text"><b>Urgent Cases</b>High-risk patients pinned at the top</div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🔔</div>
+                <div class="feat-text">
+                  <b>Notifications</b>Lab ready · follow-up due · new message
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">💬</div>
+                <div class="feat-text">
+                  <b>Patient Messages</b>Unread messages from all patients
+                </div>
+              </div>
+            </div>
+          </div>
 
-      <!-- Doctor Dashboard -->
-      <div class="module">
-        <div class="mod-title">🏠 Doctor Dashboard</div>
-        <div class="feat-list">
-          <div class="feat-item"><div class="feat-icon">📋</div><div class="feat-text"><b>Today's Queue</b>Full patient list with appointment times</div></div>
-          <div class="feat-item"><div class="feat-icon">🚨</div><div class="feat-text"><b>Urgent Cases</b>High-risk patients pinned at the top</div></div>
-          <div class="feat-item"><div class="feat-icon">🔔</div><div class="feat-text"><b>Notifications</b>Lab ready · follow-up due · new message</div></div>
-          <div class="feat-item"><div class="feat-icon">💬</div><div class="feat-text"><b>Patient Messages</b>Unread messages from all patients</div></div>
+          <div class="divider"></div>
+
+          <!-- Choose Department -->
+          <div class="module">
+            <div class="mod-title">🏢 Department & Schedule</div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #1a7f8e">1</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Department Assigned by Admin</div>
+                  <div class="fs-desc">
+                    Admin approves department and specialty. Doctor cannot modify this.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #1a7f8e">2</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Sets Available Hours</div>
+                  <div class="fs-desc">
+                    Marks working days and available time slots — patients can only book during
+                    these times.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left"><div class="fs-dot" style="background: #1a7f8e">3</div></div>
+                <div class="fs-right">
+                  <div class="fs-title">Dashboard shows today's load</div>
+                  <div class="fs-desc">
+                    Number of appointments, cases done vs. remaining, and any urgent flags.
+                  </div>
+                </div>
+              </div>
+
+              <div class="feat-item">
+                <div class="feat-icon">🔐</div>
+                <div class="feat-text">
+                  <b>Access Control</b>Doctors can only view records of patients assigned to them
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Open a Case -->
+          <div class="module">
+            <div class="mod-title">📂 Opening a Patient Case</div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #1a7f8e">1</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Select Patient from Queue</div>
+                  <div class="fs-desc">Tap on the patient's name to open their full case view.</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #1a7f8e">2</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">See AI Case Summary <span class="badge b-ai">AI</span></div>
+                  <div class="fs-desc">
+                    AI summarizes patient data for faster review — not a final diagnosis.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #1a7f8e">3</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Review Medical History & Labs</div>
+                  <div class="fs-desc">
+                    Past diagnoses, current medications, and latest lab results — all on one screen.
+                    Abnormal values highlighted automatically.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left"><div class="fs-dot" style="background: #1a7f8e">4</div></div>
+                <div class="fs-right">
+                  <div class="fs-title">Add Notes & Close Visit</div>
+                  <div class="fs-desc">
+                    Doctor writes visit notes, marks diagnosis, and the case is saved to the
+                    patient's timeline.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="feat-list" style="margin-top: 15px">
+              <div class="feat-item" style="width: 100%; grid-column: 1/-1">
+                <div class="feat-icon">🛡️</div>
+                <div class="feat-text">
+                  <b>Access Validation</b>Patient file accessible only if linked to doctor via
+                  appointment or assignment
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Prescription -->
+          <div class="module">
+            <div class="mod-title">💊 Writing a Prescription</div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #7c3aed">1</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Doctor types the diagnosis</div>
+                  <div class="fs-desc">Free text or select from a list of common conditions.</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #7c3aed">2</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">AI suggests options <span class="badge b-ai">AI</span></div>
+                  <div class="fs-desc">
+                    Suggests possible medications and safety checks — final decision must be made by
+                    the doctor.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left"><div class="fs-dot" style="background: #7c3aed">3</div></div>
+                <div class="fs-right">
+                  <div class="fs-title">
+                    Confirm & Send <span class="badge b-auto">Auto Notify</span>
+                  </div>
+                  <div class="fs-desc">
+                    Prescription sent to patient instantly. Patient receives a notification with
+                    full medication details.
+                  </div>
+                </div>
+              </div>
+              <div class="feat-list" style="margin-top: 15px">
+                <div class="feat-item" style="grid-column: 1/-1">
+                  <div class="feat-icon">⚠️</div>
+                  <div class="feat-text">
+                    <b>Medical Responsibility</b>Doctor is fully responsible for final prescription
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="module">
+            <div class="mod-title">📝 Medical Audit Log</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">🕒</div>
+                <div class="feat-text">
+                  <b>Tracked Actions</b>Every diagnosis, prescription, and edit is logged with
+                  timestamp
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">👤</div>
+                <div class="feat-text">
+                  <b>User Trace</b>Each action linked to the responsible doctor
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Lab Requests & Results -->
+          <div class="module">
+            <div class="mod-title">🧪 Lab Requests & Results</div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #1a7f8e">1</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Doctor requests a test</div>
+                  <div class="fs-desc">
+                    Selects from the lab menu — blood work, imaging, culture, etc. — and assigns to
+                    the patient.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #1a7f8e">2</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">
+                    Result arrives <span class="badge b-auto">Notification</span>
+                  </div>
+                  <div class="fs-desc">
+                    Doctor notified when results are uploaded. Abnormal values are flagged in red
+                    automatically.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left"><div class="fs-dot" style="background: #1a7f8e">3</div></div>
+                <div class="fs-right">
+                  <div class="fs-title">Review & act</div>
+                  <div class="fs-desc">
+                    Doctor reviews and can update the prescription or schedule a follow-up directly
+                    from the results screen.
+                  </div>
+                </div>
+              </div>
+              <div class="feat-list" style="margin-top: 15px">
+                <div class="feat-item" style="grid-column: 1/-1">
+                  <div class="feat-icon">🧾</div>
+                  <div class="feat-text">
+                    <b>Lab Verification</b>Results must be validated before appearing in patient
+                    records
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Emergency Cases -->
+          <div class="module">
+            <div class="mod-title">🚨 Urgent & Emergency Cases</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">🔴</div>
+                <div class="feat-text">
+                  <b>Critical Alert</b>Emergency case pushed to top of queue instantly
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">📋</div>
+                <div class="feat-text">
+                  <b>Instant Patient File</b>Full history available before patient even arrives
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🎯</div>
+                <div class="feat-text">
+                  <b>Risk Level Badge</b>L1 Stable · L2 Monitor · L3 High · L4 Critical
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🔄</div>
+                <div class="feat-text">
+                  <b>48h Follow-up</b>System auto-checks patient 2 days after visit
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="divider"></div>
+      <div class="role-section">
+        <div class="role-header" style="background: linear-gradient(135deg, #7c3aed, #5b21b6)">
+          <div class="rh-icon">🛡️</div>
+          <div>
+            <div class="rh-num">ROLE 00</div>
+            <div class="rh-title">Super Admin Flow</div>
+            <div class="rh-sub">System ownership, governance, and authority</div>
+          </div>
+        </div>
 
-      <!-- Choose Department -->
-      <div class="module">
-        <div class="mod-title">🏢 Department & Schedule</div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Doctor selects their Department</div>
-              <div class="fs-desc">On first setup — picks specialty and department. Can be in more than one.</div>
+        <div class="role-body">
+          <!-- System Authority -->
+          <div class="module">
+            <div class="mod-title">👑 System Authority</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">🛡️</div>
+                <div class="feat-text">
+                  <b>Assign Admins</b>Create, promote, or remove admin accounts
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🔐</div>
+                <div class="feat-text">
+                  <b>Permission Control</b>Define system-wide roles and access rules
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">⚙️</div>
+                <div class="feat-text">
+                  <b>System Configuration</b>Control policies, limits, and global settings
+                </div>
+              </div>
             </div>
           </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Sets Available Hours</div>
-              <div class="fs-desc">Marks working days and available time slots — patients can only book during these times.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">3</div></div>
-            <div class="fs-right">
-              <div class="fs-title">Dashboard shows today's load</div>
-              <div class="fs-desc">Number of appointments, cases done vs. remaining, and any urgent flags.</div>
+
+          <div class="divider"></div>
+
+          <!-- Audit -->
+          <div class="module">
+            <div class="mod-title">📝 Full Audit & Oversight</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">🕒</div>
+                <div class="feat-text">
+                  <b>Full Audit Access</b>View all system actions including admin activity
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">👁️</div>
+                <div class="feat-text">
+                  <b>System Monitoring</b>Track performance, usage, and anomalies
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="divider"></div>
-
-      <!-- Open a Case -->
-      <div class="module">
-        <div class="mod-title">📂 Opening a Patient Case</div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Select Patient from Queue</div>
-              <div class="fs-desc">Tap on the patient's name to open their full case view.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">See AI Case Summary <span class="badge b-ai">AI</span></div>
-              <div class="fs-desc">Auto-generated summary: chief complaint, history highlights, and risk level shown instantly.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">3</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Review Medical History & Labs</div>
-              <div class="fs-desc">Past diagnoses, current medications, and latest lab results — all on one screen. Abnormal values highlighted automatically.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">4</div></div>
-            <div class="fs-right">
-              <div class="fs-title">Add Notes & Close Visit</div>
-              <div class="fs-desc">Doctor writes visit notes, marks diagnosis, and the case is saved to the patient's timeline.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Prescription -->
-      <div class="module">
-        <div class="mod-title">💊 Writing a Prescription</div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#7C3AED">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Doctor types the diagnosis</div>
-              <div class="fs-desc">Free text or select from a list of common conditions.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#7C3AED">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">AI suggests treatment <span class="badge b-ai">AI</span></div>
-              <div class="fs-desc">Recommends medication, dosage adjusted for this patient's age and weight, with safety check included.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#7C3AED">3</div></div>
-            <div class="fs-right">
-              <div class="fs-title">Confirm & Send <span class="badge b-auto">Auto Notify</span></div>
-              <div class="fs-desc">Prescription sent to patient instantly. Patient receives a notification with full medication details.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Lab Requests & Results -->
-      <div class="module">
-        <div class="mod-title">🧪 Lab Requests & Results</div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Doctor requests a test</div>
-              <div class="fs-desc">Selects from the lab menu — blood work, imaging, culture, etc. — and assigns to the patient.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Result arrives <span class="badge b-auto">Notification</span></div>
-              <div class="fs-desc">Doctor notified when results are uploaded. Abnormal values are flagged in red automatically.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#1A7F8E">3</div></div>
-            <div class="fs-right">
-              <div class="fs-title">Review & act</div>
-              <div class="fs-desc">Doctor reviews and can update the prescription or schedule a follow-up directly from the results screen.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Emergency Cases -->
-      <div class="module">
-        <div class="mod-title">🚨 Urgent & Emergency Cases</div>
-        <div class="feat-list">
-          <div class="feat-item"><div class="feat-icon">🔴</div><div class="feat-text"><b>Critical Alert</b>Emergency case pushed to top of queue instantly</div></div>
-          <div class="feat-item"><div class="feat-icon">📋</div><div class="feat-text"><b>Instant Patient File</b>Full history available before patient even arrives</div></div>
-          <div class="feat-item"><div class="feat-icon">🎯</div><div class="feat-text"><b>Risk Level Badge</b>L1 Stable · L2 Monitor · L3 High · L4 Critical</div></div>
-          <div class="feat-item"><div class="feat-icon">🔄</div><div class="feat-text"><b>48h Follow-up</b>System auto-checks patient 2 days after visit</div></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- ══════════════════════════════════════════════════════════════
+      <!-- ══════════════════════════════════════════════════════════════
        ADMIN
   ═════════════════════════════════════════════════════════════════ -->
-  <div class="role-section">
-    <div class="role-header" style="background:linear-gradient(135deg,#D97706,#B45309)">
-      <div class="rh-icon">👑</div>
-      <div>
-        <div class="rh-num">ROLE 03</div>
-        <div class="rh-title">Admin Flow</div>
-        <div class="rh-sub">Full visibility and control over the entire system</div>
+      <div class="role-section">
+        <div class="role-header" style="background: linear-gradient(135deg, #d97706, #b45309)">
+          <div class="rh-icon">👑</div>
+          <div>
+            <div class="rh-num">ROLE 03</div>
+            <div class="rh-title">Admin Flow</div>
+            <div class="rh-sub">Full visibility and control over the entire system</div>
+          </div>
+        </div>
+        <div class="role-body">
+          <!-- Admin Dashboard -->
+          <div class="module">
+            <div class="mod-title">🏠 Admin Dashboard — Live Overview</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">🏥</div>
+                <div class="feat-text"><b>Patients Today</b>Total in-hospital count, live</div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">⏱️</div>
+                <div class="feat-text">
+                  <b>Average Wait Time</b>Per department, updated every 5 minutes
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🔥</div>
+                <div class="feat-text"><b>Busiest Department</b>Highlighted in real-time</div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">⭐</div>
+                <div class="feat-text"><b>Doctor Ratings</b>Average score per doctor today</div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">💰</div>
+                <div class="feat-text"><b>Revenue Today</b>Billed vs. collected at a glance</div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🛏️</div>
+                <div class="feat-text">
+                  <b>Bed Occupancy</b>Available vs. occupied hospital beds
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Manage Doctors -->
+          <div class="module">
+            <div class="mod-title">👨‍⚕️ Managing Doctors</div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #d97706">1</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Add or Edit a Doctor Profile</div>
+                  <div class="fs-desc">
+                    Name, specialty, department, working hours, consultation fee.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #d97706">2</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Assign to Department</div>
+                  <div class="fs-desc">
+                    One doctor can cover multiple departments or time shifts.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left"><div class="fs-dot" style="background: #d97706">3</div></div>
+                <div class="fs-right">
+                  <div class="fs-title">Monitor Performance</div>
+                  <div class="fs-desc">
+                    View ratings, patient load, and on-time rate for every doctor from one screen.
+                  </div>
+                </div>
+              </div>
+              <div class="feat-list" style="margin-top: 15px">
+                <div class="feat-item" style="grid-column: 1/-1">
+                  <div class="feat-icon">✔️</div>
+                  <div class="feat-text">
+                    <b>Doctor Verification</b>Doctors must be verified before activation
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Manage Appointments -->
+          <div class="module">
+            <div class="mod-title">📅 Managing Appointments</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">🔁</div>
+                <div class="feat-text">
+                  <b>Override or Reschedule</b>Admin can move or cancel any booking
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">📋</div>
+                <div class="feat-text">
+                  <b>Waitlist Control</b>Manage overflow and prioritize urgent bookings
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">📊</div>
+                <div class="feat-text">
+                  <b>Daily View</b>Full hospital schedule in one calendar view
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🔔</div>
+                <div class="feat-text">
+                  <b>No-Show Alerts</b>Notified when a patient misses their slot
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">⛔</div>
+                <div class="feat-text">
+                  <b>Override Logging</b>All admin changes to appointments are logged and traceable
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Reports -->
+          <div class="module">
+            <div class="mod-title">📊 Reports & Analytics</div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #d97706">1</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">Choose Report Type</div>
+                  <div class="fs-desc">
+                    Daily summary · monthly performance · department breakdown · doctor ratings.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left">
+                  <div class="fs-dot" style="background: #d97706">2</div>
+                  <div class="fs-line"></div>
+                </div>
+                <div class="fs-right">
+                  <div class="fs-title">View Charts & Numbers</div>
+                  <div class="fs-desc">
+                    Visual graphs for patient volume, revenue, wait times, and satisfaction scores.
+                  </div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="fs-left"><div class="fs-dot" style="background: #d97706">3</div></div>
+                <div class="fs-right">
+                  <div class="fs-title">Export <span class="badge b-auto">PDF / Excel</span></div>
+                  <div class="fs-desc">
+                    One-click export for any report — ready to share or print.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- System Control -->
+          <div class="module">
+            <div class="mod-title">⚙️ System Control</div>
+            <div class="feat-list">
+              <div class="feat-item">
+                <div class="feat-icon">🏢</div>
+                <div class="feat-text">
+                  <b>Department Management</b>Create, edit, and set capacity per department
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">💳</div>
+                <div class="feat-text">
+                  <b>Billing & Insurance</b>Invoices, payment tracking, insurance claims
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">🔐</div>
+                <div class="feat-text">
+                  <b>User Access Control</b>Activate / deactivate accounts and assign predefined
+                  roles (no custom permission editing)
+                </div>
+              </div>
+              <div class="feat-item">
+                <div class="feat-icon">📝</div>
+                <div class="feat-text">
+                  <b>Audit Log</b>All actions are logged and monitored — including admin activity,
+                  with full traceability
+                </div>
+              </div>
+
+              <div class="feat-item" style="grid-column: 1/-1">
+                <div class="feat-icon">🔐</div>
+                <div class="feat-text">
+                  <b>Medical Data Privacy</b>Admins cannot access detailed patient medical records,
+                  only operational data
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-logo">SmartCare AI</div>
+        <div>User Flow Document &nbsp;·&nbsp; Confidential</div>
       </div>
     </div>
-    <div class="role-body">
 
-      <!-- Admin Dashboard -->
-      <div class="module">
-        <div class="mod-title">🏠 Admin Dashboard — Live Overview</div>
-        <div class="feat-list">
-          <div class="feat-item"><div class="feat-icon">🏥</div><div class="feat-text"><b>Patients Today</b>Total in-hospital count, live</div></div>
-          <div class="feat-item"><div class="feat-icon">⏱️</div><div class="feat-text"><b>Average Wait Time</b>Per department, updated every 5 minutes</div></div>
-          <div class="feat-item"><div class="feat-icon">🔥</div><div class="feat-text"><b>Busiest Department</b>Highlighted in real-time</div></div>
-          <div class="feat-item"><div class="feat-icon">⭐</div><div class="feat-text"><b>Doctor Ratings</b>Average score per doctor today</div></div>
-          <div class="feat-item"><div class="feat-icon">💰</div><div class="feat-text"><b>Revenue Today</b>Billed vs. collected at a glance</div></div>
-          <div class="feat-item"><div class="feat-icon">🛏️</div><div class="feat-text"><b>Bed Occupancy</b>Available vs. occupied hospital beds</div></div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Manage Doctors -->
-      <div class="module">
-        <div class="mod-title">👨‍⚕️ Managing Doctors</div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#D97706">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Add or Edit a Doctor Profile</div>
-              <div class="fs-desc">Name, specialty, department, working hours, consultation fee.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#D97706">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Assign to Department</div>
-              <div class="fs-desc">One doctor can cover multiple departments or time shifts.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#D97706">3</div></div>
-            <div class="fs-right">
-              <div class="fs-title">Monitor Performance</div>
-              <div class="fs-desc">View ratings, patient load, and on-time rate for every doctor from one screen.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Manage Appointments -->
-      <div class="module">
-        <div class="mod-title">📅 Managing Appointments</div>
-        <div class="feat-list">
-          <div class="feat-item"><div class="feat-icon">🔁</div><div class="feat-text"><b>Override or Reschedule</b>Admin can move or cancel any booking</div></div>
-          <div class="feat-item"><div class="feat-icon">📋</div><div class="feat-text"><b>Waitlist Control</b>Manage overflow and prioritize urgent bookings</div></div>
-          <div class="feat-item"><div class="feat-icon">📊</div><div class="feat-text"><b>Daily View</b>Full hospital schedule in one calendar view</div></div>
-          <div class="feat-item"><div class="feat-icon">🔔</div><div class="feat-text"><b>No-Show Alerts</b>Notified when a patient misses their slot</div></div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Reports -->
-      <div class="module">
-        <div class="mod-title">📊 Reports & Analytics</div>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#D97706">1</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">Choose Report Type</div>
-              <div class="fs-desc">Daily summary · monthly performance · department breakdown · doctor ratings.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#D97706">2</div><div class="fs-line"></div></div>
-            <div class="fs-right">
-              <div class="fs-title">View Charts & Numbers</div>
-              <div class="fs-desc">Visual graphs for patient volume, revenue, wait times, and satisfaction scores.</div>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="fs-left"><div class="fs-dot" style="background:#D97706">3</div></div>
-            <div class="fs-right">
-              <div class="fs-title">Export <span class="badge b-auto">PDF / Excel</span></div>
-              <div class="fs-desc">One-click export for any report — ready to share or print.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- System Control -->
-      <div class="module">
-        <div class="mod-title">⚙️ System Control</div>
-        <div class="feat-list">
-          <div class="feat-item"><div class="feat-icon">🏢</div><div class="feat-text"><b>Department Management</b>Create, edit, and set capacity per department</div></div>
-          <div class="feat-item"><div class="feat-icon">💳</div><div class="feat-text"><b>Billing & Insurance</b>Invoices, payment tracking, insurance claims</div></div>
-          <div class="feat-item"><div class="feat-icon">🔐</div><div class="feat-text"><b>User Access Control</b>Activate / deactivate accounts, set permissions</div></div>
-          <div class="feat-item"><div class="feat-icon">📝</div><div class="feat-text"><b>Audit Log</b>Every action in the system is logged with time and user</div></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <div class="footer">
-    <div class="footer-logo">SmartCare AI</div>
-    <div>User Flow Document &nbsp;·&nbsp; Confidential</div>
-  </div>
-
-</div>
-
-<button class="print-btn no-print" onclick="window.print()">🖨️ Save as PDF</button>
-
-</body>
+    <button class="print-btn no-print" onclick="window.print()">🖨️ Save as PDF</button>
+  </body>
 </html>
